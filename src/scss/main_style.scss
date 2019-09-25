@@ -1,0 +1,219 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,700);
+
+:root {
+	/* Base font size */
+	font-size: 10px;
+
+	/* Heading height variable*/
+	--heading-height: 30em;
+}
+
+body {
+	font-family: "Roboto", Arial, sans-serif;
+  background-color: $main-backgroundcolor;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.main {
+	padding: calc(var(--heading-height) + 1.5vw) 4em 0;
+}
+
+.header {
+	position: absolute;
+	width: 100%;
+  height: var(--heading-height);
+
+  /* Create angled background with 'before' pseudo-element */
+  &::before {
+    content: "";
+    display: block;
+    position: absolute;
+    bottom: 6em;
+    width: 100%;
+    height: calc(var(--heading-height) + 10em);
+    z-index: -1;
+    transform: skewY(-3.5deg);
+    background: 
+      linear-gradient(rgba(0,0,0,.6), rgba(0,0,0,.6)),
+      url(https://images.unsplash.com/photo-1495464101292-552d0b52fe41?auto=format&fit=crop&w=1350&q=80) no-repeat center,
+      linear-gradient(#4e4376, #2b5876);
+    background-size: cover;
+    border-bottom: .2em solid $main-textcolor;
+  }
+
+  &__title {
+    font-size: calc(2.8em + 2.6vw);
+    font-weight: 700;
+    letter-spacing: .01em;
+    padding: 10rem 0 0 4.5rem;
+    text-shadow: .022em .022em .022em #111;
+    color: $main-textcolor;
+  }
+}
+
+.current_location {
+  background-color: lighten($main-backgroundcolor, 10%);
+  width: 100%;
+  height: 400px;
+  @include shadow;
+  color: $main-textcolor;
+
+  &__title {
+    @include textalign;
+
+    &-name {
+      @include textalign;
+    }
+  }
+
+  &__icon {
+    margin: auto;
+    padding: auto;
+    display: block;
+    width: 100px;
+  }
+
+  &__temp {
+    @include temp;
+
+    &--max {
+      @include temp;
+    }
+
+    &--min {
+      @include temp;
+    }
+  }
+
+  &__delete {
+    position: absolute;
+    color: white;
+    display: flex;
+    height: 100px;  
+    width: 100px;
+    padding-bottom: 0;
+    text-align: center;
+    font-size: 20px;
+  }
+}
+
+.location {
+  background-color: lighten($main-backgroundcolor, 10%);
+  width: 80%;
+  height: 400px;
+  @include shadow;
+  color: $main-textcolor;
+  margin: 20px 20px 30px 20px;
+
+  &__title {
+    padding-top: 20px;
+    font-size: 3em;
+    text-align: center;
+  }
+
+  &__icon {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width: 100px;
+  }
+
+  &__temp {
+    text-align: center;
+    font-size: 3em;
+    padding: 0 100px;
+  }
+}
+
+.locations {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  padding: 10px;
+
+  &__item {
+    padding: 20px;
+  }
+}
+
+.header__submit {
+  display: none; 
+  position: fixed;
+  z-index: 1; 
+  padding-top: 100px;
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0,0.4);
+
+  &_content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+  }
+
+  &_close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+
+    &:hover, &:focus {
+      color: #000;
+      text-decoration: none;
+      cursor: pointer;
+    }
+  }
+}
+
+.button {
+  position: relative;
+  z-index: 1;
+  width: 80px;
+  height: 80px;
+  color: #1a1a1a;
+  background: #ed1c5b;
+  border-radius: 50%;
+  border: none;
+  transition: box-shadow 400ms cubic-bezier(.2,0,.7,1), transform 200ms cubic-bezier(.2,0,.7,1);
+  
+  &:after {
+      content: "+";
+      font-size: 2.5em;
+      line-height: 1.1em;
+  }
+
+  &:hover {
+      transform: rotate(45deg);
+      box-shadow: 0 0 1px 15px rgba(#8A3B58, 0.4),
+      0 0 1px 30px rgba(#8A3B58, 0.1),
+      0 0 1px 45px rgba(#8A3B58, 0.1);
+  }
+
+  &__text {
+    margin: {right: 1em;}
+    text-align: center;
+    color: #8A3B58;
+  }
+
+  &__holder {
+    position: absolute;
+    top: 30px;
+    right: 50px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 300px;
+
+    &:after {
+      content: "";
+      position: absolute;
+      z-index: 0;
+      top: 0; right: 0; bottom: 0; left: 0;
+    }
+  }
+}
