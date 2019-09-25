@@ -1,3 +1,6 @@
+//API KEY
+const key = "cac67298b97190e436286c4e1500ac73";
+const buttonArray = document.querySelector(".main__button");
 // Get the modal
 var modal = document.getElementById("header__submit");    
 // Get the button that opens the modal
@@ -19,37 +22,29 @@ window.onclick = function(event) {
   }
 }
 
+//
+function drawWeather(d) {
+  let maxcelcius = Math.round(parseFloat(d.main.temp_max)-273.15);
+  let mincelcius = Math.round(parseFloat(d.main.temp_min)-273.15);
+
+  document.querySelector(".current_location__title-name").innerHTML = d.name;;
+  document.querySelector(".current_location__temp--max").innerHTML = "Max temp " + maxcelcius + "&#8451;";
+  document.querySelector(".current_location__temp--min").innerHTML = "Min temp " + mincelcius + "&#8451;";
+  citySubmit(d.name);
+}
+
 //geolocation starts
 if (navigator.geolocation) {
   navigator.geolocation.getCurrentPosition(displayLocationInfo);
 }
 
-let deleteLocal = document.querySelector('.current_location__delete');
- deleteLocal.addEventListener("click", function() {
-   localStorage.clear();
-   console.log(localStorage);
-});
-
 function displayLocationInfo(position) {
   const lng = position.coords.longitude;
   const lat = position.coords.latitude;
 
-  let buttonArray = document.querySelector(".main__button");
-  //local storage
-  localStorage = window.localStorage;
-
-  buttonArray.addEventListener("click", function() {
-    let boxvalue = document.querySelector('.main__search').value;
-    localStorage.setItem("cityNames-" + boxvalue, JSON.stringify(boxvalue));
-    citySubmit(city = boxvalue);
-    console.log(localStorage);
-  })
   console.log(localStorage);
   weatherBalloon(lat, lng);
 }
-
-  //API KEY
-  const key = "cac67298b97190e436286c4e1500ac73";
 
 //Get current location
 function weatherBalloon(lat,lng) {
@@ -63,43 +58,84 @@ function weatherBalloon(lat,lng) {
   });
 }
 
+let deleteLocal = document.querySelector('.current_location__delete');
+ deleteLocal.addEventListener("click", function() {
+   localStorage.clear();
+   location.reload();
+});
 
-function citySubmit(city) {
-  fetch('https://api.openweathermap.org/data/2.5/weather?q=' + city + '&appid=' + key)  
-  .then(function(resp) { return resp.json() }) // Convert data to json
-  .then(function(data) {
-    drawcityWeather(data);
-  })
-  .catch(function() {
-  });
-}
+//local storage
+localStorage = window.localStorage;
 
-function drawcityWeather(c) {
+buttonArray.addEventListener("click", function() {
+  let boxvalue = document.querySelector('.main__search').value;
+  localStorage.setItem("cityNames-" + boxvalue, boxvalue);
+  location.reload();
+})
+
+function drawWeatherMain(c) {
+  console.log(c.name);
+  const container = document.querySelector('.cityNames-' + c.name);
+  let maxcelcius = Math.round(parseFloat(c.main.temp_max)-273.15);
+  let mincelcius = Math.round(parseFloat(c.main.temp_min)-273.15);
+
+  container.innerHTML += `
+    <h2 class="location__title">${c.name}</h2>
+    <img src="../images/weather.png" class="location__icon">
+      <p class="location__temp">Max temp ${maxcelcius}&#8451;</p>
+      <p class="location__temp">Min temp ${mincelcius}&#8451;</p>
+  	`;
+  //document.querySelector(".location__title").innerHTML = c.name;
+  //document.querySelector(".location__temp").innerHTML = Math.round(parseFloat(c.main.temp_max) - 273.15) + " °C";
+  /*console.log(c.weather[0].main);
+  switch (c.weather[0].main) {
+      case "Thunderstorm":
+          console.log('thunderstorm');
+          document.querySelector('.location__icon').src = "../images/thunder.svg";
+          break;
+      case "Drizzle":
+          console.log('Drizzle');
+          document.querySelector('.location__icon').src = "../images/raining.svg";
+          break;
+      case "Rain":
+          console.log('Rain');
+          document.querySelector('.location__icon').src = "../images/raining.svg";
+          break;
+      case "Snow":
+          console.log('Snow');
+          document.querySelector('.location__icon').src = "../images/snow.svg";
+          break;
+      case "Clear":
+          console.log('Clear');
+          document.querySelector('.location__icon').src = "../images/sunny.svg";
+          break;
+      case "Clouds":
+          console.log('Clouds');
+          document.querySelector('.location__icon').src = "../images/cloudy.svg";
+          break;
+
+      default:
+          console.log('default');
+          break;*/
+  }
+
+
+function drawcityWeather() {
   for (i = 0; i < localStorage.length; i++) {
+    const container = document.querySelector(".locations");
+    container.innerHTML += `
+      <section class="location locations__item ${localStorage.key(i)}">
+      </section>
+      `;
     let currentI = localStorage.getItem(localStorage.key(i));
+    console.log(currentI);
     fetch(`http://api.openweathermap.org/data/2.5/weather?q=${currentI}&appid=${key}`).then(result => {
         return result.json();
     }).then(result => {
-        let maxcelcius = Math.round(parseFloat(c.main.temp_max)-273.15);
-        fetchResult = result;
-        document.querySelector(".locations").innerHTML += `
-        <section class="location locations__item">
-        <h2 class="location__title">${c.name}</h2>
-        <img src="../images/weather.png" class="location__icon">
-          <p class="location__temp">${maxcelcius}</p>
-          <p class="location__temp"></p>
-        </section>
-    `
+      console.log(result);
+       drawWeatherMain(result);
     })
 }
 }
-//
-function drawWeather(d) {
-  let maxcelcius = Math.round(parseFloat(d.main.temp_max)-273.15);
-  let mincelcius = Math.round(parseFloat(d.main.temp_min)-273.15);
 
-  document.querySelector(".current_location__title-name").innerHTML = d.name;;
-  document.querySelector(".current_location__temp--max").innerHTML = "Max temp " + maxcelcius + "&#8451;";
-  document.querySelector(".current_location__temp--min").innerHTML = "Min temp " + mincelcius + "&#8451;";
-  citySubmit(d.name);
-}
+drawcityWeather();
