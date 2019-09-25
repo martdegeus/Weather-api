@@ -1,0 +1,21 @@
+//Mixins file
+
+@mixin shadow {
+    -webkit-box-shadow: -7px 10px 5px 0px $basic-shadow;
+    -moz-box-shadow: -7px 10px 5px 0px $basic-shadow;
+     box-shadow: -7px 10px 5px 0px $basic-shadow;
+}
+
+@mixin textalign {
+    padding-top: 20px;
+    font-size: 3em;
+    text-align: center;
+    margin: auto;
+    padding: auto;
+}
+
+@mixin temp {
+    text-align: center;
+    font-size: 3em;
+    padding: 0 80px;
+}
