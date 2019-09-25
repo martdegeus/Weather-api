@@ -1,0 +1,11 @@
+
+//This is the main SCSS file, use this not for CSS rules, but for
+// imports and other important main functionality
+//All the variables
+@import 'variables';
+
+//The mixins
+@import 'mixins';
+
+//The main CSS rules written in SCSS
+@import 'main_style';
