@@ -46,7 +46,7 @@ body {
 	width: $max;
   height: var(--heading-height);
 
-  /* Create angled background with 'before' pseudo-element */
+  // Create angled background with 'before' pseudo-element
   &::before {
     content: "";
     display: block;
@@ -71,6 +71,40 @@ body {
     padding: 10rem 0 0 4.5rem;
     text-shadow: .022em .022em .022em $second-textcolor;
     color: $main-textcolor;
+  }
+  &__submit {
+    display: none; 
+    position: fixed;
+    z-index: 1; 
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: $max; 
+    height: $max;
+    overflow: auto;
+    background-color: $second-textcolor;
+    background-color: $second-textcolor;
+  
+    &_content {
+      background-color: $main-textcolor;
+      margin: auto;
+      padding: 20px;
+      border: 1px solid lighten($second-textcolor, 25%);
+      width: 80%;
+    }
+  
+    &_close {
+      color: lighten($second-textcolor, 50%);
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+  
+      &:hover, &:focus {
+        color: $second-textcolor;
+        text-decoration: none;
+        cursor: pointer;
+      }
+    }
   }
 }
 
@@ -153,44 +187,10 @@ body {
   display: grid;
   grid-template-columns: auto auto auto;
   padding: 10px;
+  cursor: move;
 
   &__item {
     padding: 20px;
-  }
-}
-
-.header__submit {
-  display: none; 
-  position: fixed;
-  z-index: 1; 
-  padding-top: 100px;
-  left: 0;
-  top: 0;
-  width: $max; 
-  height: $max;
-  overflow: auto;
-  background-color: $second-textcolor;
-  background-color: $second-textcolor;
-
-  &_content {
-    background-color: $main-textcolor;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid lighten($second-textcolor, 25%);
-    width: 80%;
-  }
-
-  &_close {
-    color: lighten($second-textcolor, 50%);
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-
-    &:hover, &:focus {
-      color: $second-textcolor;
-      text-decoration: none;
-      cursor: pointer;
-    }
   }
 }
 

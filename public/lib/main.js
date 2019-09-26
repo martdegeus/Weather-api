@@ -1,6 +1,7 @@
 //API KEY
 const key = "cac67298b97190e436286c4e1500ac73";
 const buttonArray = document.querySelector(".main__button");
+var array = [];
 // Get the modal
 let modal = document.getElementById("header__submit");    
 // Modal opener and closer
@@ -74,15 +75,19 @@ buttonArray.addEventListener("click", function() {
 // Loop and draw city's
 function drawcityWeather() {
   for (i = 0; i < localStorage.length; i++) {
+  
+      array.push(localStorage.key(i));
+    
     const container = document.querySelector(".locations");
     let localnames = localStorage.key(i);
     localnames = localnames.replace(/ /g,"");
 
     container.innerHTML += `
-      <section class="location locations__item ${localStorage.key(i)}">
+      <section ondrop="drop(event)" ondragover="allowDrop(event)" class="location locations__item ${localStorage.key(i)}">
       </section>
       `;
     let currentI = localStorage.getItem(localStorage.key(i));
+    console.log(currentI);
     // Fetch api
     fetch(`http://api.openweathermap.org/data/2.5/weather?q=${currentI}&appid=${key}&units=metric`)
     .then(result => {
@@ -102,11 +107,13 @@ function drawcityWeather() {
         let iconCode = result.weather[0].icon;
 
         container.innerHTML += `
+        <div id="${namespace}" draggable="true" ondragstart="drag(event)">
         <input type="image" src="../images/trashcan.png" data-city="${currentI}" class="location__delete">
           <h2 class="location__title">${namespace}</h2>
           <img src="http://openweathermap.org/img/wn/${iconCode}@2x.png" class="location__icon">
           <p class="location__temp">Max temp ${maxcelcius}&#8451;</p>
           <p class="location__temp">Min temp ${mincelcius}&#8451;</p>
+        </div>
           `;
         
           removeCity();
@@ -116,7 +123,7 @@ function drawcityWeather() {
 
 // Delete button
 function removeCity(){ 
-  let deleteButton = document.querySelectorAll(".locations__delete");
+  let deleteButton = document.querySelectorAll(".location__delete");
   for (a = 0; a < deleteButton.length; a++) {
       deleteButton[a].addEventListener('click', function () {
           let data = this.getAttribute('data-city');
@@ -126,4 +133,54 @@ function removeCity(){
   }
 }
 
+// Drag and Drop
+function allowDrop(ev) {
+  ev.preventDefault();
+}
+
+function drag(ev) {
+  ev.dataTransfer.setData("src", ev.target.id);
+}
+
+function drop(ev) {
+  //array = JSON.parse(localStorage.getItem(localStorage.key(i)));
+
+  console.log(array); //[1, 2, 3]
+
+  ev.preventDefault();
+  var src = document.getElementById(ev.dataTransfer.getData("src"));
+  var srcParent = src.parentNode;
+  var tgt = ev.currentTarget.firstElementChild;
+
+  
+
+  ev.currentTarget.replaceChild(src, tgt);
+  srcParent.appendChild(tgt);
+
+  let srcId = src.getAttribute("id");
+  let tgtId = tgt.getAttribute("id");
+
+  let srcId2 = "cityNames-" + srcId;
+  let tgtId2 = "cityNames-" + tgtId;
+  console.log(srcId2);
+  let a = array.indexOf(srcId2);
+  let b = array.indexOf(tgtId2);
+  console.log(a);
+  console.log(b);
+
+  classjea = document.querySelector("." + srcId2);
+  classjeb = document.querySelector("." + tgtId2);
+  
+  classjea.className = "location locations__item " + tgtId2;
+  classjeb.className = "location locations__item " + srcId2;
+
+  array[a] = tgtId2;
+  array[b] = srcId2;
+  console.log(array);
+  for (i = 0; i < array.length; i++) {
+    localStorage.setItem(array[i], array[i].replace("cityNames-", ""));
+  }
+  // location.reload();
+}
+//localStorage.clear();
 drawcityWeather();
