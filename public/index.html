@@ -11,8 +11,8 @@
 </head>
 
 <body>
-    <header class="header">
-      <h1 class="header__title">Weather</h1>
+  <header class="header">
+    <h1 class="header__title">Weather</h1>
       <div class="button__holder">
         <h2 class="button__text">Add location &rarr;</h2>
         <button id="button" class="button"></button>
@@ -20,32 +20,20 @@
       <div id="header__submit" class="header__submit">
         <div class="header__submit_content">
           <span class="header__submit_close">&times;</span>
-            <p>Please insert a city</p>
-            <input type="text" class="main__search">
-            <button class="main__button"></button>
+          <p>Please insert a city</p>
+          <input type="text" class="main__search">
+          <button class="main__button"></button>
         </div>
       </div>
-    </header>
+  </header>
 
-    <main class="main">
-      <section class="current_location">
-        <input type="image" src="../images/trash_can_PNG.png" class="current_location__delete">
-        <h2 class="current_location__title">Current Location -</h2>
-        <h2 class="current_location__title-name"></h2>
-        <img src="../images/weather.png" class="current_location__icon">
-        <p class="current_location__temp--max">&#8451;</p>
-        <p class="current_location__temp--min">Min Temp 3 &#8451;</p>
-      </section>
-      <!-- chosen location loop -->
-      <section class="locations">
-        <!--<section class="location locations__item">
-          <h2 class="location__title">Rijswijk</h2>
-          <img src="../images/weather.png" class="location__icon">
-          <p class="location__temp">Max Temp 10 &#8451;</p>
-          <p class="location__temp">Min Temp 3 &#8451;</p>
-        </section> -->
-      </section>
-    </main> 
-    <script src="lib/main.js"></script>
+  <main class="main">
+    <input type="image" src="../images/trash_can_PNG.png" class="current_location__delete">
+    <section class="current_location">
+    </section>
+    <section class="locations">
+    </section>
+  </main>
+  <script src="lib/main.js"></script>
 </body>
 </html>

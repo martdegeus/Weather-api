@@ -22,17 +22,6 @@ window.onclick = function(event) {
   }
 }
 
-//
-function drawWeather(d) {
-  let maxcelcius = Math.round(parseFloat(d.main.temp_max)-273.15);
-  let mincelcius = Math.round(parseFloat(d.main.temp_min)-273.15);
-
-  document.querySelector(".current_location__title-name").innerHTML = d.name;;
-  document.querySelector(".current_location__temp--max").innerHTML = "Max temp " + maxcelcius + "&#8451;";
-  document.querySelector(".current_location__temp--min").innerHTML = "Min temp " + mincelcius + "&#8451;";
-  citySubmit(d.name);
-}
-
 //geolocation starts
 if (navigator.geolocation) {
   navigator.geolocation.getCurrentPosition(displayLocationInfo);
@@ -46,18 +35,29 @@ function displayLocationInfo(position) {
   weatherBalloon(lat, lng);
 }
 
-//Get current location
+//Get current location if correct draw it
 function weatherBalloon(lat,lng) {
-  fetch('https://api.openweathermap.org/data/2.5/weather?lat=' + lat + '&lon=' + lng + '&appid=' + key)  
+  fetch('https://api.openweathermap.org/data/2.5/weather?lat=' + lat + '&lon=' + lng + '&appid=' + key + '&units=metric')  
   .then(function(resp) { return resp.json() }) // Convert data to json
   .then(function(data) {
-    //console.log(data);
-    drawWeather(data);
+    let maxcelcius = data.main.temp_max;
+    let mincelcius = data.main.temp_min;
+    let iconCode = data.weather[0].icon;
+    const container = document.querySelector('.current_location');
+
+    document.querySelector(".current_location").innerHTML += `
+      <h2 class="current_location__title">Current Location -</h2>
+      <h2 class="current_location__title-name">${data.name}</h2>
+      <img src="http://openweathermap.org/img/wn/${iconCode}@2x.png" class="current_location__icon">
+      <p class="current_location__temp--max">${maxcelcius}&#8451;</p>
+      <p class="current_location__temp--min">${mincelcius}&#8451;</p>
+      `;
   })
   .catch(function() {
   });
 }
 
+//delete all city's
 let deleteLocal = document.querySelector('.current_location__delete');
  deleteLocal.addEventListener("click", function() {
    localStorage.clear();
@@ -73,23 +73,7 @@ buttonArray.addEventListener("click", function() {
   location.reload();
 })
 
-function drawWeatherMain(c) {
-  console.log(c.name);
-  namespace = c.name.replace(/ /g,"");
-  const container = document.querySelector('.cityNames-' + namespace);
-  let maxcelcius = c.main.temp_max;
-  let mincelcius = c.main.temp_min;
-  let iconCode = c.weather[0].icon;
-
-  container.innerHTML += `
-    <h2 class="location__title">${namespace}</h2>
-    <img src="http://openweathermap.org/img/wn/${iconCode}@2x.png" class="location__icon">
-      <p class="location__temp">Max temp ${maxcelcius}&#8451;</p>
-      <p class="location__temp">Min temp ${mincelcius}&#8451;</p>
-  	`;
-  }
-
-
+//loop and draw city's
 function drawcityWeather() {
   for (i = 0; i < localStorage.length; i++) {
     const container = document.querySelector(".locations");
@@ -101,14 +85,24 @@ function drawcityWeather() {
       </section>
       `;
     let currentI = localStorage.getItem(localStorage.key(i));
-    console.log(currentI);
+    //fetch api
     fetch(`http://api.openweathermap.org/data/2.5/weather?q=${currentI}&appid=${key}&units=metric`)
     .then(result => {
         return result.json();
     }).then(result => {
       if(result.cod == 200){
-        console.log(result);
-        drawWeatherMain(result);
+        namespace = result.name.replace(/ /g,"");
+        const container = document.querySelector('.cityNames-' + namespace);
+        let maxcelcius = result.main.temp_max;
+        let mincelcius = result.main.temp_min;
+        let iconCode = result.weather[0].icon;
+
+        container.innerHTML += `
+          <h2 class="location__title">${namespace}</h2>
+          <img src="http://openweathermap.org/img/wn/${iconCode}@2x.png" class="location__icon">
+            <p class="location__temp">Max temp ${maxcelcius}&#8451;</p>
+            <p class="location__temp">Min temp ${mincelcius}&#8451;</p>
+          `;
       }
       else{
         console.log("error");
