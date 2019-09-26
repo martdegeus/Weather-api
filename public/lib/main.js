@@ -75,65 +75,47 @@ buttonArray.addEventListener("click", function() {
 
 function drawWeatherMain(c) {
   console.log(c.name);
-  const container = document.querySelector('.cityNames-' + c.name);
-  let maxcelcius = Math.round(parseFloat(c.main.temp_max)-273.15);
-  let mincelcius = Math.round(parseFloat(c.main.temp_min)-273.15);
+  namespace = c.name.replace(/ /g,"");
+  const container = document.querySelector('.cityNames-' + namespace);
+  let maxcelcius = c.main.temp_max;
+  let mincelcius = c.main.temp_min;
+  let iconCode = c.weather[0].icon;
 
   container.innerHTML += `
-    <h2 class="location__title">${c.name}</h2>
-    <img src="../images/weather.png" class="location__icon">
+    <h2 class="location__title">${namespace}</h2>
+    <img src="http://openweathermap.org/img/wn/${iconCode}@2x.png" class="location__icon">
       <p class="location__temp">Max temp ${maxcelcius}&#8451;</p>
       <p class="location__temp">Min temp ${mincelcius}&#8451;</p>
   	`;
-  //document.querySelector(".location__title").innerHTML = c.name;
-  //document.querySelector(".location__temp").innerHTML = Math.round(parseFloat(c.main.temp_max) - 273.15) + " °C";
-  /*console.log(c.weather[0].main);
-  switch (c.weather[0].main) {
-      case "Thunderstorm":
-          console.log('thunderstorm');
-          document.querySelector('.location__icon').src = "../images/thunder.svg";
-          break;
-      case "Drizzle":
-          console.log('Drizzle');
-          document.querySelector('.location__icon').src = "../images/raining.svg";
-          break;
-      case "Rain":
-          console.log('Rain');
-          document.querySelector('.location__icon').src = "../images/raining.svg";
-          break;
-      case "Snow":
-          console.log('Snow');
-          document.querySelector('.location__icon').src = "../images/snow.svg";
-          break;
-      case "Clear":
-          console.log('Clear');
-          document.querySelector('.location__icon').src = "../images/sunny.svg";
-          break;
-      case "Clouds":
-          console.log('Clouds');
-          document.querySelector('.location__icon').src = "../images/cloudy.svg";
-          break;
-
-      default:
-          console.log('default');
-          break;*/
   }
 
 
 function drawcityWeather() {
   for (i = 0; i < localStorage.length; i++) {
     const container = document.querySelector(".locations");
+    let localnames = localStorage.key(i);
+    localnames = localnames.replace(/ /g,"");
+
     container.innerHTML += `
-      <section class="location locations__item ${localStorage.key(i)}">
+      <section class="location locations__item ${localnames}">
       </section>
       `;
     let currentI = localStorage.getItem(localStorage.key(i));
     console.log(currentI);
-    fetch(`http://api.openweathermap.org/data/2.5/weather?q=${currentI}&appid=${key}`).then(result => {
+    fetch(`http://api.openweathermap.org/data/2.5/weather?q=${currentI}&appid=${key}&units=metric`)
+    .then(result => {
         return result.json();
     }).then(result => {
-      console.log(result);
-       drawWeatherMain(result);
+      if(result.cod == 200){
+        console.log(result);
+        drawWeatherMain(result);
+      }
+      else{
+        console.log("error");
+        localStorage.removeItem("cityNames-" + result.name);
+        console.log(localStorage);
+        //location.reload();
+      }
     })
 }
 }
