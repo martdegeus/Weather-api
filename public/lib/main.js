@@ -1,7 +1,8 @@
 //API KEY
 const key = "cac67298b97190e436286c4e1500ac73";
 const buttonArray = document.querySelector(".main__button");
-var array = [];
+let array = [];
+
 // Get the modal
 let modal = document.getElementById("header__submit");    
 // Modal opener and closer
@@ -62,13 +63,13 @@ let deleteLocal = document.querySelector('.current_location__delete');
    location.reload();
 });
 
-// Local storage
-localStorage = window.localStorage;
-
 // If city added
 buttonArray.addEventListener("click", function() {
   let boxvalue = document.querySelector('.main__search').value;
   localStorage.setItem("cityNames-" + boxvalue, boxvalue);
+  // localStorage.setItem("cityObj", JSON.stringify({
+  //   "key" + array.length++ + ":" boxvalue;
+  // }))
   location.reload();
 })
 
@@ -152,14 +153,11 @@ function drop(ev) {
   var srcParent = src.parentNode;
   var tgt = ev.currentTarget.firstElementChild;
 
-  
-
   ev.currentTarget.replaceChild(src, tgt);
   srcParent.appendChild(tgt);
 
   let srcId = src.getAttribute("id");
   let tgtId = tgt.getAttribute("id");
-
   let srcId2 = "cityNames-" + srcId;
   let tgtId2 = "cityNames-" + tgtId;
   console.log(srcId2);
@@ -170,16 +168,20 @@ function drop(ev) {
 
   classjea = document.querySelector("." + srcId2);
   classjeb = document.querySelector("." + tgtId2);
-  
   classjea.className = "location locations__item " + tgtId2;
   classjeb.className = "location locations__item " + srcId2;
 
   array[a] = tgtId2;
   array[b] = srcId2;
   console.log(array);
+  console.log(array.length);
+
+  //localStorage.clear();
+  //drawcityWeather();
   for (i = 0; i < array.length; i++) {
-    localStorage.setItem(array[i], array[i].replace("cityNames-", ""));
-  }
+    //localStorage.setItem(JSON.stringify(array[i], array[i]));
+    //localStorage.setItem(array[i], array[i].replace("cityNames-", ""));
+  } 
   // location.reload();
 }
 //localStorage.clear();
