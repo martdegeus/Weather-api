@@ -11,26 +11,48 @@
 body {
 	font-family: "Roboto", Arial, sans-serif;
   background-color: $main-backgroundcolor;
-  max-width: 100%;
+  max-width: $max;
   overflow-x: hidden;
 }
 
 .main {
-	padding: calc(var(--heading-height) + 1.5vw) 4em 0;
+  padding: calc(var(--heading-height) + 1.5vw) 4em 0;
+  
+  &__button {
+    color: $second-textcolor;
+    background: $main-textcolor;
+    border: 1px $main-textcolor solid;
+    padding: 5px 10px;
+    border-radius: 2px;
+    font-weight: bold;
+    font-size: 9pt;
+    outline: none;
+
+    &:hover {
+        border: 1px $main-textcolor solid;
+        box-shadow: 1px 1px 1px $main-textcolor;
+        color: lighten($second-textcolor, 25%);
+        background: $main-textcolor;
+    }
+
+    &:active {
+      box-shadow: inset 1px 1px 1px $main-textcolor;   
+    }
+  }
 }
 
 .header {
 	position: absolute;
-	width: 100%;
+	width: $max;
   height: var(--heading-height);
 
-  /* Create angled background with 'before' pseudo-element */
+  // Create angled background with 'before' pseudo-element
   &::before {
     content: "";
     display: block;
     position: absolute;
     bottom: 6em;
-    width: 100%;
+    width: $max;
     height: calc(var(--heading-height) + 10em);
     z-index: -1;
     transform: skewY(-3.5deg);
@@ -47,14 +69,48 @@ body {
     font-weight: 700;
     letter-spacing: .01em;
     padding: 10rem 0 0 4.5rem;
-    text-shadow: .022em .022em .022em #111;
+    text-shadow: .022em .022em .022em $second-textcolor;
     color: $main-textcolor;
+  }
+  &__submit {
+    display: none; 
+    position: fixed;
+    z-index: 1; 
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: $max; 
+    height: $max;
+    overflow: auto;
+    background-color: $second-textcolor;
+    background-color: $second-textcolor;
+  
+    &_content {
+      background-color: $main-textcolor;
+      margin: auto;
+      padding: 20px;
+      border: 1px solid lighten($second-textcolor, 25%);
+      width: 80%;
+    }
+  
+    &_close {
+      color: lighten($second-textcolor, 50%);
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+  
+      &:hover, &:focus {
+        color: $second-textcolor;
+        text-decoration: none;
+        cursor: pointer;
+      }
+    }
   }
 }
 
 .current_location {
   background-color: lighten($main-backgroundcolor, 10%);
-  width: 100%;
+  width: $max;
   height: 400px;
   @include shadow;
   color: $main-textcolor;
@@ -75,20 +131,14 @@ body {
   }
 
   &__temp {
-    @include temp;
-
-    &--max {
-      @include temp;
-    }
-
-    &--min {
-      @include temp;
-    }
+    text-align: center;
+    font-size: 3em;
+    padding: 0 80px;
   }
 
   &__delete {
     position: absolute;
-    color: white;
+    color: $main-textcolor;
     display: flex;
     height: 100px;  
     width: 100px;
@@ -99,6 +149,7 @@ body {
 }
 
 .location {
+  display: block;
   background-color: lighten($main-backgroundcolor, 10%);
   width: 80%;
   height: 400px;
@@ -124,50 +175,22 @@ body {
     font-size: 3em;
     padding: 0 100px;
   }
+
+  &__delete {
+    position: absolute;
+    height: 50px;
+  }
+
 }
 
 .locations {
   display: grid;
   grid-template-columns: auto auto auto;
   padding: 10px;
+  cursor: move;
 
   &__item {
     padding: 20px;
-  }
-}
-
-.header__submit {
-  display: none; 
-  position: fixed;
-  z-index: 1; 
-  padding-top: 100px;
-  left: 0;
-  top: 0;
-  width: 100%; 
-  height: 100%;
-  overflow: auto;
-  background-color: rgb(0,0,0);
-  background-color: rgba(0,0,0,0.4);
-
-  &_content {
-    background-color: #fefefe;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-  }
-
-  &_close {
-    color: #aaaaaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-
-    &:hover, &:focus {
-      color: #000;
-      text-decoration: none;
-      cursor: pointer;
-    }
   }
 }
 
@@ -176,8 +199,8 @@ body {
   z-index: 1;
   width: 80px;
   height: 80px;
-  color: #1a1a1a;
-  background: #ed1c5b;
+  color: $second-textcolor;
+  background: $button-maincolor;
   border-radius: 50%;
   border: none;
   transition: box-shadow 400ms cubic-bezier(.2,0,.7,1), transform 200ms cubic-bezier(.2,0,.7,1);
@@ -190,15 +213,15 @@ body {
 
   &:hover {
       transform: rotate(45deg);
-      box-shadow: 0 0 1px 15px rgba(#8A3B58, 0.4),
-      0 0 1px 30px rgba(#8A3B58, 0.1),
-      0 0 1px 45px rgba(#8A3B58, 0.1);
+      box-shadow: 0 0 1px 15px rgba(lighten($button-maincolor, 20%), 0.4),
+      0 0 1px 30px rgba(lighten($button-maincolor, 20%), 0.1),
+      0 0 1px 45px rgba(lighten($button-maincolor, 20%), 0.1);
   }
 
   &__text {
     margin: {right: 1em;}
     text-align: center;
-    color: #8A3B58;
+    color: $button-maincolor;
   }
 
   &__holder {

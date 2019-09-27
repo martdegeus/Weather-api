@@ -1,105 +1,188 @@
+//API KEY
+const key = "cac67298b97190e436286c4e1500ac73";
+const buttonArray = document.querySelector(".main__button");
+let array = [];
+
 // Get the modal
-var modal = document.getElementById("header__submit");    
-// Get the button that opens the modal
-var btn = document.getElementById("button");
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("header__submit_close")[0];
-// When the user clicks the button, open the modal 
+let modal = document.getElementById("header__submit");    
+// Modal opener and closer
+let btn = document.getElementById("button");
+let span = document.getElementsByClassName("header__submit_close")[0];
+ 
 btn.onclick = function() {
   modal.style.display = "block";
 }
-// When the user clicks on <span> (x), close the modal
+
 span.onclick = function() {
   modal.style.display = "none";
 }
-// When the user clicks anywhere outside of the modal, close it
+
 window.onclick = function(event) {
   if (event.target == modal) {
     modal.style.display = "none";
   }
 }
 
-//geolocation starts
+// Geolocation starts
 if (navigator.geolocation) {
   navigator.geolocation.getCurrentPosition(displayLocationInfo);
 }
 
-let deleteLocal = document.querySelector('.current_location__delete');
- deleteLocal.addEventListener("click", function() {
-   localStorage.clear();
-   console.log(localStorage);
-});
-
 function displayLocationInfo(position) {
   const lng = position.coords.longitude;
   const lat = position.coords.latitude;
-
-  let buttonArray = document.querySelector(".main__button");
-  //local storage
-  localStorage = window.localStorage;
-
-  buttonArray.addEventListener("click", function() {
-    let boxvalue = document.querySelector('.main__search').value;
-    localStorage.setItem("cityNames-" + boxvalue, JSON.stringify(boxvalue));
-    citySubmit(city = boxvalue);
-    console.log(localStorage);
-  })
-  console.log(localStorage);
   weatherBalloon(lat, lng);
 }
 
-  //API KEY
-  const key = "cac67298b97190e436286c4e1500ac73";
-
-//Get current location
+// Get current location if correct draw it
 function weatherBalloon(lat,lng) {
-  fetch('https://api.openweathermap.org/data/2.5/weather?lat=' + lat + '&lon=' + lng + '&appid=' + key)  
+  fetch('https://api.openweathermap.org/data/2.5/weather?lat=' + lat + '&lon=' + lng + '&appid=' + key + '&units=metric')  
   .then(function(resp) { return resp.json() }) // Convert data to json
   .then(function(data) {
-    //console.log(data);
-    drawWeather(data);
+    let maxcelcius = data.main.temp_max;
+    let mincelcius = data.main.temp_min;
+    let iconCode = data.weather[0].icon;
+    const container = document.querySelector('.current_location');
+
+    document.querySelector(".current_location").innerHTML += `
+      <h2 class="current_location__title">Current Location -</h2>
+      <h2 class="current_location__title-name">${data.name}</h2>
+      <img src="http://openweathermap.org/img/wn/${iconCode}@2x.png" class="current_location__icon">
+      <p class="current_location__temp">${maxcelcius}&#8451;</p>
+      <p class="current_location__temp">${mincelcius}&#8451;</p>
+      `;
   })
   .catch(function() {
   });
 }
 
+// Delete all city's
+let deleteLocal = document.querySelector('.current_location__delete');
+ deleteLocal.addEventListener("click", function() {
+   localStorage.clear();
+   location.reload();
+});
 
-function citySubmit(city) {
-  fetch('https://api.openweathermap.org/data/2.5/weather?q=' + city + '&appid=' + key)  
-  .then(function(resp) { return resp.json() }) // Convert data to json
-  .then(function(data) {
-    drawcityWeather(data);
-  })
-  .catch(function() {
-  });
-}
+// If city added
+buttonArray.addEventListener("click", function() {
+  let boxvalue = document.querySelector('.main__search').value;
+  localStorage.setItem("cityNames-" + boxvalue, boxvalue);
+  // localStorage.setItem("cityObj", JSON.stringify({
+  //   "key" + array.length++ + ":" boxvalue;
+  // }))
+  location.reload();
+})
 
-function drawcityWeather(c) {
+// Loop and draw city's
+function drawcityWeather() {
   for (i = 0; i < localStorage.length; i++) {
-    let currentI = localStorage.getItem(localStorage.key(i));
-    fetch(`http://api.openweathermap.org/data/2.5/weather?q=${currentI}&appid=${key}`).then(result => {
-        return result.json();
-    }).then(result => {
-        let maxcelcius = Math.round(parseFloat(c.main.temp_max)-273.15);
-        fetchResult = result;
-        document.querySelector(".locations").innerHTML += `
-        <section class="location locations__item">
-        <h2 class="location__title">${c.name}</h2>
-        <img src="../images/weather.png" class="location__icon">
-          <p class="location__temp">${maxcelcius}</p>
-          <p class="location__temp"></p>
-        </section>
-    `
-    })
-}
-}
-//
-function drawWeather(d) {
-  let maxcelcius = Math.round(parseFloat(d.main.temp_max)-273.15);
-  let mincelcius = Math.round(parseFloat(d.main.temp_min)-273.15);
+  
+      array.push(localStorage.key(i));
+    
+    const container = document.querySelector(".locations");
+    let localnames = localStorage.key(i);
+    localnames = localnames.replace(/ /g,"");
 
-  document.querySelector(".current_location__title-name").innerHTML = d.name;;
-  document.querySelector(".current_location__temp--max").innerHTML = "Max temp " + maxcelcius + "&#8451;";
-  document.querySelector(".current_location__temp--min").innerHTML = "Min temp " + mincelcius + "&#8451;";
-  citySubmit(d.name);
+    container.innerHTML += `
+      <section ondrop="drop(event)" ondragover="allowDrop(event)" class="location locations__item ${localStorage.key(i)}">
+      </section>
+      `;
+    let currentI = localStorage.getItem(localStorage.key(i));
+    console.log(currentI);
+    // Fetch api
+    fetch(`http://api.openweathermap.org/data/2.5/weather?q=${currentI}&appid=${key}&units=metric`)
+    .then(result => {
+      // Remove from local storage if invalid
+      if (result.status !== 200) {
+        localStorage.removeItem("cityNames-" + currentI);
+        location.reload();
+      }
+
+      // If valid
+      return result.json();
+    }).then(result => {
+        namespace = result.name.replace(/ /g,"");
+        const container = document.querySelector('.cityNames-' + namespace);
+        let maxcelcius = result.main.temp_max;
+        let mincelcius = result.main.temp_min;
+        let iconCode = result.weather[0].icon;
+
+        container.innerHTML += `
+        <div id="${namespace}" draggable="true" ondragstart="drag(event)">
+        <input type="image" src="../images/trashcan.png" data-city="${currentI}" class="location__delete">
+          <h2 class="location__title">${namespace}</h2>
+          <img src="http://openweathermap.org/img/wn/${iconCode}@2x.png" class="location__icon">
+          <p class="location__temp">Max temp ${maxcelcius}&#8451;</p>
+          <p class="location__temp">Min temp ${mincelcius}&#8451;</p>
+        </div>
+          `;
+        
+          removeCity();
+    })
+  }
 }
+
+// Delete button
+function removeCity(){ 
+  let deleteButton = document.querySelectorAll(".location__delete");
+  for (a = 0; a < deleteButton.length; a++) {
+      deleteButton[a].addEventListener('click', function () {
+          let data = this.getAttribute('data-city');
+          localStorage.removeItem("cityNames-" + data);
+          location.reload();
+      })
+  }
+}
+
+// Drag and Drop
+function allowDrop(ev) {
+  ev.preventDefault();
+}
+
+function drag(ev) {
+  ev.dataTransfer.setData("src", ev.target.id);
+}
+
+function drop(ev) {
+  //array = JSON.parse(localStorage.getItem(localStorage.key(i)));
+
+  console.log(array); //[1, 2, 3]
+
+  ev.preventDefault();
+  var src = document.getElementById(ev.dataTransfer.getData("src"));
+  var srcParent = src.parentNode;
+  var tgt = ev.currentTarget.firstElementChild;
+
+  ev.currentTarget.replaceChild(src, tgt);
+  srcParent.appendChild(tgt);
+
+  let srcId = src.getAttribute("id");
+  let tgtId = tgt.getAttribute("id");
+  let srcId2 = "cityNames-" + srcId;
+  let tgtId2 = "cityNames-" + tgtId;
+  console.log(srcId2);
+  let a = array.indexOf(srcId2);
+  let b = array.indexOf(tgtId2);
+  console.log(a);
+  console.log(b);
+
+  classjea = document.querySelector("." + srcId2);
+  classjeb = document.querySelector("." + tgtId2);
+  classjea.className = "location locations__item " + tgtId2;
+  classjeb.className = "location locations__item " + srcId2;
+
+  array[a] = tgtId2;
+  array[b] = srcId2;
+  console.log(array);
+  console.log(array.length);
+
+  //localStorage.clear();
+  //drawcityWeather();
+  for (i = 0; i < array.length; i++) {
+    //localStorage.setItem(JSON.stringify(array[i], array[i]));
+    //localStorage.setItem(array[i], array[i].replace("cityNames-", ""));
+  } 
+  // location.reload();
+}
+//localStorage.clear();
+drawcityWeather();
